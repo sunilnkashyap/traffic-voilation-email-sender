@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mail Server</title>
+  </head>
+  <body>
+    <h1>Sunil Mail Server</h1>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.min.js"
+      integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      function getParameterByName(name, url = window.location.href) {
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+          results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return "";
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+      }
+
+      function sendMail() {
+        console.log("here");
+        var url = "https://api.smtp2go.com/v3/email/send";
+        var message = `
+          <h1>Electronic Traffic Rules Violation Challan</h1>
+          <b>License</b>: ${getParameterByName("license")}
+          <br/>
+          <b>Rule</b>: ${getParameterByName("rule")}
+          <br/>
+          <b>Fine</b>: ${getParameterByName("fine")}
+          <br/>
+          <b>Email</b>: ${getParameterByName("email")}
+          <br/>
+          <b>Message</b>: Electronic Traffic Rules Violation Challan
+          <br/>
+        `;
+
+        $.ajax({
+          url: url,
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          data: JSON.stringify({
+            api_key: "api-BADF49F0AFC611EAAA9EF23C91C88F4E",
+            sender: "info@dev-sunil.com",
+            to: ["sunilnkashyap@gmail.com"],
+            bcc: ["sunilnkashyap@gmail.com"],
+            subject: "Electronic Traffic Rules Violation Challan.",
+            html_body: message,
+          }),
+        })
+          .done(function (result) {
+            console.log(result);
+          })
+          .fail(function (err) {
+            console.log(err);
+          });
+      }
+
+      sendMail();
+    </script>
+  </body>
+</html>
